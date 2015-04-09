@@ -58,6 +58,21 @@ class AddImportMessage(Message):
     def getType(self):
         return Types.ADD_IMPORT
 
+class ListenMessage(Message):
+    def __init__(self, importid, functionname):
+        self.ImportId = importid
+        self.FunctionName = functionname
+
+    def getType(self):
+        return Types.LISTEN
+
+class StopListenMessage(Message):
+    def __init__(self, importid, functionname):
+        self.ImportId = importid
+        self.FunctionName = functionname
+
+    def getType(self):
+        return Types.STOP_LISTEN
 
 class Request(Message):
     def __init__(self, appkeyname, functionname, calltype, tags, uuid, importid, exportid, codec, result):
@@ -148,3 +163,5 @@ class Result(Message):
 
     def decode(self):
         return json.loads(base64.b64decode(self.Result))
+
+

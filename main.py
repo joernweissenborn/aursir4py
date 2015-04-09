@@ -28,6 +28,9 @@ def main():
     print(ia.call("SayHello",{"Greeting":"Hello from aursir4py"}).decode())
     ia.callAll("SayHello",{"Greeting":"Hello from aursir4py"})
     print(ia.listen().decode())
+    ia.start_listen("SayHello")
+    ia.trigger("SayHello",{"Greeting":"Hello from aursir4py"})
+    print(ia.listen().decode())
     iface.stop()
 
 

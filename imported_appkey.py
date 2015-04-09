@@ -50,3 +50,10 @@ class ImportedAppkey:
 
     def listen(self):
         return self.__listenq.get()
+
+    def start_listen(self, functionname):
+        m = messages.ListenMessage(self.id, functionname)
+        self.__router.send(m)
+    def stop_listen(self, functionname):
+        m = messages.StopListenMessage(self.id, functionname)
+        self.__router.send(m)
