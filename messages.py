@@ -58,6 +58,14 @@ class AddImportMessage(Message):
     def getType(self):
         return Types.ADD_IMPORT
 
+class AddExportMessage(Message):
+    def __init__(self, appkey, tags):
+        self.AppKey = appkey
+        self.Tags = tags
+
+    def getType(self):
+        return Types.ADD_EXPORT
+
 class ListenMessage(Message):
     def __init__(self, importid, functionname):
         self.ImportId = importid
@@ -75,7 +83,7 @@ class StopListenMessage(Message):
         return Types.STOP_LISTEN
 
 class Request(Message):
-    def __init__(self, appkeyname, functionname, calltype, tags, uuid, importid, exportid, codec, result):
+    def __init__(self, appkeyname, functionname, calltype, tags, uuid, importid, exportid, codec, request):
         self.AppKeyName = appkeyname
         self.FunctionName = functionname
         self.CallType = calltype
@@ -84,12 +92,12 @@ class Request(Message):
         self.ImportId  = importid
         self.ExportId  = exportid
         self.Codec = codec
-        self.Result = result
+        self.Request = request
         self.Stream	= False
         self.StreamFinished = True
 
     @classmethod
-    def from_parameter(cls, appkeyname, functionname, calltype, tags, uuid, importid, result):
+    def from_parameter(cls, appkeyname, functionname, calltype, tags, uuid, importid, request):
         return cls(appkeyname,
                    functionname,
                    calltype,
@@ -98,7 +106,7 @@ class Request(Message):
                    importid,
                    "",
                    "JSON",
-                   base64.b64encode(json.dumps(result))
+                   base64.b64encode(json.dumps(request))
         )
 
     @classmethod
@@ -116,6 +124,11 @@ class Request(Message):
 
     def getType(self):
         return Types.REQUEST
+
+    def decode(self):
+        return json.loads(base64.b64decode(self.Request))
+
+
 
 
 class Result(Message):

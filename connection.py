@@ -8,6 +8,7 @@ import messages
 import json
 import time
 import imported_appkey
+import exported_appkey
 
 class Outgoing(threading.Thread):
     def __init__(self,uuid, ctx, port, q, stopevt):
@@ -80,14 +81,19 @@ class Router(threading.Thread):
         self.__o.start()
 
         self.__resqs = {}
+        self.__reqqs = {}
         self.__listenqs = {}
         self.__impaddedqs = {}
+        self.__expaddedqs = {}
 
         self.switch = {
             messages.Types.DOCKED: self.docked,
             messages.Types.IMPORT_ADDED: self.import_added,
-            messages.Types.RESULT: self.result
-        }
+            messages.Types.EXPORT_ADDED: self.export_added,
+            messages.Types.RESULT: self.result,
+            messages.Types.REQUEST: self.request,
+
+            }
 
     def send(self,message):
         self.__outq.put(message)
@@ -99,8 +105,13 @@ class Router(threading.Thread):
     def reg_import_added_q(self,ik,q):
         self.__impaddedqs[ik] = q
 
+    def reg_export_added_q(self,ek,q):
+        self.__expaddedqs[ek] = q
+
     def reg_res_q(self,Uuid,q):
         self.__resqs[Uuid] = q
+    def reg_req_q(self,Expid,q):
+        self.__reqqs[Expid] = q
 
     def reg_listen_q(self,importid,q):
         self.__listenqs[importid] = q
@@ -130,12 +141,24 @@ class Router(threading.Thread):
         self.__impaddedqs[ikey].put(ia)
         del self.__impaddedqs[ikey]
 
+    def export_added(self,m):
+        ea = exported_appkey.ExportedAppkey(json.loads(m), self)
+        ekey = ea.appkey.ApplicationKeyName
+        for t in ea.tags:
+            ekey += t
+        self.__expaddedqs[ekey].put(ea)
+        del self.__expaddedqs[ekey]
+
     def result(self,m):
         r = messages.Result.from_message(json.loads(m))
         if r.CallType == 0:
             self.__resqs[r.Uuid].put(r)
         else:
             self.__listenqs[r.ImportId].put(r)
+
+    def request(self,m):
+        r = messages.Request.from_message(json.loads(m))
+        self.__reqqs[r.ExportId].put(r)
 
 class UdpPing(threading.Thread):
     def __init__(self, port, Uuid, stopevt):

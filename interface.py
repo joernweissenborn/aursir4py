@@ -37,3 +37,13 @@ class Interface():
         self.__router.reg_import_added_q(impkey,q)
         self.__router.send(m)
         return q.get()
+
+    def add_export(self,appkey, tags=[]):
+        m = messages.AddExportMessage(appkey,tags)
+        expkey = appkey.ApplicationKeyName
+        for t in tags:
+            expkey += t
+        q = Queue.Queue()
+        self.__router.reg_export_added_q(expkey,q)
+        self.__router.send(m)
+        return q.get()
