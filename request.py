@@ -1,7 +1,7 @@
 __author__ = 'joern'
 
 import umsgpack
-from lib import libaursir
+import libexport
 
 class Request:
     def __init__(self, uuid, function, params, exporter):
@@ -15,5 +15,5 @@ class Request:
         return umsgpack.unpackb(self.params)
 
     def reply(self, params):
-        libaursir.Reply(self.exporter, self.uuid, umsgpack.packb(params))
+        libexport.Reply(self.exporter, self.uuid, umsgpack.packb(params))
         # libaursir.Reply(self.exporter, self.uuid, umsgpack.packb(params))

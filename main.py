@@ -17,11 +17,12 @@ functions:
 
 def main():
     e = export.AurSirExport(HELLOKEY, '192.168.122.1')
-    while True:
-        print("HELLO")
-        r = e.request()
-        print(r.decode())
-        r.reply({"Answer": "Greetings Back from AurSir4py"})
+    e.react({"SayHello",greet_back})
+
+
+def greet_back(r):
+    print(r.decode())
+    return {"Answer": "Greetings Back from AurSir4py"}
 
     # iface = interface.Interface()
     # print("OPA")

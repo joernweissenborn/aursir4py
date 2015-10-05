@@ -2,7 +2,7 @@ __author__ = 'joern'
 
 import ctypes
 
-libaursir = ctypes.CDLL('libaursirexport.so')
+libaursirimport = ctypes.CDLL('libaursirimport.so')
 
 libaursir.NewExportYAML.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 libaursir.NewExportYAML.restype = ctypes.c_int
