@@ -3,6 +3,7 @@ __author__ = 'joern'
 import umsgpack
 import libexport
 
+
 class Request:
     def __init__(self, uuid, function, params, exporter):
         self.uuid = uuid
@@ -11,9 +12,9 @@ class Request:
         self.exporter = exporter
 
     def decode(self):
-        print(type(self.params))
         return umsgpack.unpackb(self.params)
 
     def reply(self, params):
+        if self.exporter is None:
+            return
         libexport.Reply(self.exporter, self.uuid, umsgpack.packb(params))
-        # libaursir.Reply(self.exporter, self.uuid, umsgpack.packb(params))
