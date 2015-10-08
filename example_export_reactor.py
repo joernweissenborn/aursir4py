@@ -34,14 +34,16 @@ def main():
     # create and AurSirExport
     e = export.AurSirExport(HELLO_SERVICE, '127.0.0.1')
 
-    # retrieve a request
-    req = e.request()
+    # run the reactor with a dict FunctionName -> Callback
+    e.react(dict([("SayHello", greet_back)]))
 
-    # get the data
-    print(req.decode())
 
-    # reply
-    req.reply({"Answer": "Greetings Back from AurSir4py"})
+def greet_back(result):
+
+    print(result)
+
+    # return a dict with the parameters
+    return {"Answer": "Greetings Back from AurSir4py"}
 
 
 if __name__ == "__main__":

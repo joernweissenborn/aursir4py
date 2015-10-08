@@ -19,7 +19,6 @@ class AurSirExport:
 
     def request(self):
         uuid = self.idq.get()
-        print(uuid)
         function = libexport.RetrieveRequestFunction(self.id, uuid).decode("ascii")
         params = libexport.RetrieveRequestParams(self.id, uuid)
         return Request(uuid, function, params, self.id)
@@ -30,13 +29,9 @@ class AurSirExport:
     def react(self, reactions):
         while True:
             req = self.request()
-            print("gg")
-            print(reactions)
-            print(type(reactions))
-            print(type(req.function))
-            print(reactions["SayHello"])
             reaction = reactions[req.function]
             req.reply(reaction(req.decode()))
+
 
 class ExportReceiver(threading.Thread):
     def __init__(self, eid, idq):

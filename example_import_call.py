@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with aursir4py.  If not, see <http://www.gnu.org/licenses/>.
 
-import export
+from aursir_import import AurSirImport
 
-
+# HELLO_SERVICE describes a simple service which can be greeted and greets back
 HELLO_SERVICE = '''
 functions:
   - name: SayHello
@@ -31,18 +31,18 @@ functions:
 
 
 def main():
-    # create and AurSirExport
-    e = export.AurSirExport(HELLO_SERVICE, '127.0.0.1')
 
-    # retrieve a request
-    req = e.request()
+    # create the AurSir Import with the HELLO_SERVICE service descriptor and bind it to localhost
+    i = AurSirImport(HELLO_SERVICE, '127.0.0.1')
+
+    # call works like request reply
+    res = i.call('SayHello', dict([('Greeting', 'Hello From AurSir4pi')]))
+
+    # wait for a reply
+    res.receive()
 
     # get the data
-    print(req.decode())
-
-    # reply
-    req.reply({"Answer": "Greetings Back from AurSir4py"})
-
+    print(res.decode())
 
 if __name__ == "__main__":
     main()
